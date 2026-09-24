@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import { SITE, SOCIAL_LINKS } from '../consts';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout>
+  <section class="hero">
+    <div>
+      <h1 class="hero__title">{SITE.name}</h1>
+      <p class="hero__role">{SITE.role}</p>
+      <p class="muted">
+        I build LLM systems that hold up outside the demo: retrieval pipelines, evaluation
+        harnesses, and the infrastructure that keeps inference cheap and observable.
+      </p>
+      <ul class="link-row">
+        {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
+        {
+          SOCIAL_LINKS.map((link) => (
+            <li>
+              <a href={link.href} rel="me noopener" target="_blank">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+    {
+      SITE.avatar ? (
+        <img class="hero__photo" src={SITE.avatar} alt={SITE.name} width="144" height="144" />
+      ) : (
+        <div class="hero__photo hero__photo--placeholder" aria-hidden="true">
+          {SITE.name.charAt(0)}
+        </div>
+      )
+    }
+  </section>
+
+  <section aria-labelledby="about-heading">
+    <h2 id="about-heading">About</h2>
+    <p>
+      I work across the stack of applied AI — data curation and embedding strategy at the
+      bottom, evaluation and observability at the top. Most of my time goes into the
+      unglamorous middle: chunking that respects document structure, rerankers that earn
+      their latency, and eval sets that catch regressions before users do.
+    </p>
+    <p>
+      Lately I have been focused on agentic workflows with hard reliability requirements,
+      where the interesting problems are failure handling and cost control rather than
+      prompt wording. I care about systems that are debuggable a week after you ship them.
+    </p>
+  </section>
+
+  <section aria-labelledby="focus-heading">
+    <h2 id="focus-heading">Focus areas</h2>
+    <ul class="card-grid">
+      <li class="card">
+        <h3>Retrieval &amp; RAG</h3>
+        <p>Hybrid search, chunking strategy, and reranking tuned against real queries.</p>
+      </li>
+      <li class="card">
+        <h3>Evaluation</h3>
+        <p>Offline eval harnesses, LLM-as-judge with calibration, regression gates in CI.</p>
+      </li>
+      <li class="card">
+        <h3>Inference infra</h3>
+        <p>Serving, batching, caching, and cost observability for production traffic.</p>
+      </li>
+    </ul>
+  </section>
+
+  {
+    posts.length > 0 && (
+      <section aria-labelledby="writing-heading">
+        <div class="section-heading">
+          <h2 id="writing-heading">Recent writing</h2>
+          <a href="/blog">All posts →</a>
+        </div>
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li>
+              <h3 class="post-list__title">
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h3>
+              <p class="muted">{post.data.description}</p>
+              <p class="post-meta">
+                <FormattedDate date={post.data.pubDate} />
+              </p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</BaseLayout>

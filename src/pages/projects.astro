@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+/**
+ * Add a project by appending an object here. `href` is optional —
+ * omit it for work you cannot link to publicly.
+ */
+const projects = [
+  {
+    name: 'Eval Harness',
+    description:
+      'A regression-testing framework for LLM pipelines. Runs golden datasets on every pull request and fails the build when quality drops past a threshold.',
+    stack: ['Python', 'Pytest', 'Postgres'],
+    href: null,
+  },
+  {
+    name: 'Hybrid Retrieval Service',
+    description:
+      'BM25 plus dense retrieval with reciprocal rank fusion and a cross-encoder reranker. Serves sub-200ms p95 over a multi-million chunk corpus.',
+    stack: ['Rust', 'Qdrant', 'ONNX'],
+    href: null,
+  },
+  {
+    name: 'Trace Viewer',
+    description:
+      'A local-first UI for inspecting agent traces: every tool call, token count, and retry in one timeline, with diffing between runs.',
+    stack: ['TypeScript', 'SQLite'],
+    href: null,
+  },
+] as const;
+---
+
+<BaseLayout
+  title="Projects"
+  description="Selected projects in retrieval, evaluation, and LLM infrastructure."
+>
+  <header class="page-header">
+    <h1>Projects</h1>
+    <p>Selected work in retrieval, evaluation, and LLM infrastructure.</p>
+  </header>
+
+  <ul class="post-list">
+    {
+      projects.map((project) => (
+        <li>
+          <h2 class="post-list__title">
+            {project.href ? <a href={project.href}>{project.name}</a> : project.name}
+          </h2>
+          <p class="muted">{project.description}</p>
+          <p class="post-meta">
+            <span class="tag-list">
+              {project.stack.map((item) => (
+                <span class="tag">{item}</span>
+              ))}
+            </span>
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>

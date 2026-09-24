@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import { SITE } from '../../consts';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+const description = `Essays on retrieval, evaluation, and production LLM systems by ${SITE.name}.`;
+---
+
+<BaseLayout title="Blog" description={description}>
+  <header class="page-header">
+    <h1>Blog</h1>
+    <p>{description}</p>
+  </header>
+
+  {
+    posts.length === 0 ? (
+      <p class="muted">No posts yet.</p>
+    ) : (
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <h2 class="post-list__title">
+              <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            </h2>
+            <p class="muted">{post.data.description}</p>
+            <p class="post-meta">
+              <FormattedDate date={post.data.pubDate} />
+              {post.data.tags.length > 0 && (
+                <span class="tag-list">
+                  {post.data.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </span>
+              )}
+            </p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</BaseLayout>

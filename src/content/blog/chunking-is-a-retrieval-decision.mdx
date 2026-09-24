@@ -1,0 +1,61 @@
+---
+title: 'Chunking Is a Retrieval Decision, Not a Preprocessing Step'
+description: 'Most RAG quality problems trace back to chunk boundaries. Here is how to choose a chunking strategy from your query distribution instead of from a blog post.'
+pubDate: 2026-06-12
+tags: ['rag', 'retrieval']
+---
+
+Most teams pick a chunk size on day one and never revisit it. `1000` characters, `200` overlap, move on. The number feels like a preprocessing detail. It is not — it is the single highest-leverage retrieval decision you will make, and it is measurable.
+
+## What a chunk actually is
+
+A chunk is the atomic unit of retrieval. When you fix chunk boundaries, you are deciding what the retriever is allowed to return. Everything downstream — reranking, context assembly, the final answer — can only work with what survived that cut.
+
+That means chunking errors are unrecoverable. A reranker can reorder candidates, but it cannot recover a sentence that got split across two chunks and is now half-missing from both.
+
+## Start from the queries, not the documents
+
+The usual approach chunks by document structure: headings, paragraphs, fixed windows. It is the wrong starting point. The right one is your query distribution.
+
+Ask what a query needs in order to be answerable in one shot:
+
+- **Factual lookup** — "what is the default timeout?" A small, precise chunk wins. Large chunks dilute the signal and push the answer below the noise floor.
+- **Procedural** — "how do I rotate a key?" The whole procedure must land in one chunk. Splitting it produces a confident, incomplete answer, which is worse than no answer.
+- **Comparative** — "how does X differ from Y?" No single chunk answers this. You need to retrieve multiple candidates and let the model synthesize.
+
+If your traffic is a mix, so is your chunking. One fixed window serves the first case well and the second case badly.
+
+## Measure before you tune
+
+Chunking is only worth tuning if you can see the effect. Build a small eval set first — a few hundred real queries with known-good passages — and track retrieval recall at *k*. Then change one variable at a time.
+
+The signal you want is **recall at the reranker's input depth**. Recall at the final output tells you the reranker is working; recall before it tells you whether the retriever ever had a chance.
+
+```python
+def recall_at_k(queries, retriever, k=20):
+    hits = 0
+    for query, gold_ids in queries:
+        retrieved = {c.id for c in retriever.search(query.text, k=k)}
+        if retrieved & gold_ids:
+            hits += 1
+    return hits / len(queries)
+```
+
+Run this with 512, 1024, and 2048 token chunks. The winner is rarely the one you guessed.
+
+## Structural chunking, then a fallback
+
+The strongest default is hierarchical: split on document structure first, then apply a size cap only where structure runs out.
+
+1. Split on headings and section boundaries. These are the author's own semantic units.
+2. Within a section, split on paragraph boundaries.
+3. Only if a paragraph still exceeds your cap, fall back to a sliding window with overlap.
+4. Prepend the section path to each chunk — `Billing > Refunds > Timing` — so an isolated chunk carries its own context.
+
+That last step is cheap and disproportionately effective. A chunk reading "the window is 30 days" is ambiguous. Prefixed with its heading path, it is answerable.
+
+## When to stop tuning
+
+Chunking improvements show diminishing returns fast. If recall at depth is above roughly 90%, further tuning buys less than fixing your reranker or your context assembly. The goal is not the perfect chunk — it is getting the right passage into the candidate set, which is a much lower bar.
+
+Spend a day on chunking. Spend the rest of the week on evaluation.

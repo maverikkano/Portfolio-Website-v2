@@ -1,0 +1,17 @@
+---
+import { SITE } from '../consts';
+
+const year = new Date().getFullYear();
+const { email, phone, location } = SITE;
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <span>&copy; {year} {SITE.name}</span>
+    <span class="site-footer__contact">
+      {location && <span>{location}</span>}
+      {email && <a href={`mailto:${email}`}>{email}</a>}
+      {phone && <a href={`tel:${phone.replace(/\s+/g, '')}`}>{phone}</a>}
+    </span>
+  </div>
+</footer>

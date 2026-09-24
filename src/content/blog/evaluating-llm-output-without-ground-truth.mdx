@@ -1,0 +1,67 @@
+---
+title: 'Evaluating LLM Output Without a Ground Truth'
+description: 'Reference-free evaluation lets you ship an eval harness before you have labelled data. The trick is choosing metrics that fail loudly rather than politely.'
+pubDate: 2026-07-28
+tags: ['evaluation', 'llm']
+---
+
+Every eval guide assumes you have labelled data. In practice you rarely do, and waiting for it means shipping without evals at all. Reference-free evaluation is how you get signal on day one — as long as you accept what it cannot tell you.
+
+## What reference-free evaluation can and cannot do
+
+It can detect **regressions**. Run the same inputs against two model versions and compare. Relative comparison is far more reliable than absolute scoring, because systematic biases cancel out.
+
+It cannot tell you **absolute quality**. A judge that scores everything 8/10 is consistent and useless. Never report a raw judge score as if it meant something on its own.
+
+Design around this. An eval harness whose job is catching regressions is genuinely valuable and buildable today. One that claims to measure quality needs labels.
+
+## Three cheap signals that work
+
+### Constraint checks
+
+Anything checkable without a model is free and deterministic. Assert on it first:
+
+```python
+def check(answer: str, ctx: dict) -> list[str]:
+    failures = []
+    if len(answer.split()) > ctx["max_words"]:
+        failures.append("too_long")
+    if not all(c in answer for c in ctx["required_citations"]):
+        failures.append("missing_citation")
+    if re.search(r"\b(as an AI|I cannot)\b", answer, re.I):
+        failures.append("refusal")
+    return failures
+```
+
+These catch a surprising share of real failures — truncation, broken formatting, dropped citations — and they never hallucinate a verdict.
+
+### Pairwise judging
+
+Instead of scoring a single output, show a judge two outputs and ask which is better. Pairwise comparisons are more stable than absolute scores and map directly onto the decision you are making: did this change help?
+
+Swap the position of A and B and run it twice. If the judge flips, the comparison is noise. Tracking that flip rate is the cheapest calibration you will ever do.
+
+### Self-consistency
+
+Sample the same prompt several times. If the answers disagree on the facts, that is a signal — the model is guessing. High variance on a factual question is a reliable proxy for low confidence, and it needs no labels at all.
+
+## Wire it into CI
+
+An eval harness that only runs when someone remembers is not a harness. Put it in the pipeline:
+
+```yaml
+- name: Eval
+  run: uv run pytest evals/ --eval-baseline=origin/main --fail-under=0.95
+```
+
+Fail the build when the pass rate drops more than a few points against the baseline branch. Gate on regressions, not on absolute thresholds — an absolute gate will be red on day one and ignored by day three.
+
+## The discipline that makes it work
+
+Two rules keep reference-free evals honest:
+
+**Version the judge.** A judge is a model, and models change. Pin the judge version and treat a judge upgrade as a change requiring re-baselining. Otherwise your metrics shift under you and you will misread it as a product regression.
+
+**Sample the failures by hand.** Read twenty failing cases every week. Automated metrics tell you *that* something broke; only reading tells you *what*. The gap between what the harness measures and what users experience closes only if a human stays in the loop.
+
+Start with constraint checks — they take an afternoon and catch real bugs. Add pairwise judging when you start comparing approaches. Leave absolute quality scoring for when you have labels, and be suspicious of it until then.
