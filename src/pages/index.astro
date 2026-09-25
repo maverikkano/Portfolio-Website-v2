@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import { SITE, SOCIAL_LINKS } from '../consts';
+import { SITE } from '../consts';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
@@ -10,52 +10,10 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div>
-      <h1 class="hero__title">{SITE.name}</h1>
-      <p class="hero__role">{SITE.role}</p>
-      <p class="muted">
-        I build LLM systems that hold up outside the demo: retrieval pipelines, evaluation
-        harnesses, and the infrastructure that keeps inference cheap and observable.
-      </p>
-      <ul class="link-row">
-        {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
-        {
-          SOCIAL_LINKS.map((link) => (
-            <li>
-              <a href={link.href} rel="me noopener" target="_blank">
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
-    {
-      SITE.avatar ? (
-        <img class="hero__photo" src={SITE.avatar} alt={SITE.name} width="144" height="144" />
-      ) : (
-        <div class="hero__photo hero__photo--placeholder" aria-hidden="true">
-          {SITE.name.charAt(0)}
-        </div>
-      )
-    }
-  </section>
-
-  <section aria-labelledby="about-heading">
-    <h2 id="about-heading">About</h2>
-    <p>
-      I work across the stack of applied AI — data curation and embedding strategy at the
-      bottom, evaluation and observability at the top. Most of my time goes into the
-      unglamorous middle: chunking that respects document structure, rerankers that earn
-      their latency, and eval sets that catch regressions before users do.
-    </p>
-    <p>
-      Lately I have been focused on agentic workflows with hard reliability requirements,
-      where the interesting problems are failure handling and cost control rather than
-      prompt wording. I care about systems that are debuggable a week after you ship them.
-    </p>
-  </section>
+  <header class="page-header">
+    <h1>{SITE.name}</h1>
+    <p>{SITE.role}</p>
+  </header>
 
   <section aria-labelledby="focus-heading">
     <h2 id="focus-heading">Focus areas</h2>
