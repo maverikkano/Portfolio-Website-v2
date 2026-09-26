@@ -5,13 +5,13 @@ const year = new Date().getFullYear();
 const { email, phone, location } = SITE;
 ---
 
-<footer class="site-footer">
-  <div class="container site-footer__inner">
+<footer class="border-top py-4 small text-body-secondary">
+  <div class="container d-flex flex-wrap justify-content-between gap-3">
     <span>&copy; {year} {SITE.name}</span>
-    <span class="site-footer__contact">
+    <span class="d-flex flex-wrap gap-3">
       {location && <span>{location}</span>}
-      {email && <a href={`mailto:${email}`}>{email}</a>}
-      {phone && <a href={`tel:${phone.replace(/\s+/g, '')}`}>{phone}</a>}
+      {email && <a class="link-secondary" href={`mailto:${email}`}>{email}</a>}
+      {phone && <a class="link-secondary" href={`tel:${phone.replace(/\s+/g, '')}`}>{phone}</a>}
     </span>
   </div>
 </footer>

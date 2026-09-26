@@ -1,0 +1,63 @@
+// ---------------------------------------------------------------------------
+// Bootstrap 5 entry point.
+//
+// Variable overrides must come BEFORE the Bootstrap import — Sass resolves
+// `!default` at import time, so anything set after is silently ignored.
+// ---------------------------------------------------------------------------
+
+// --- Palette -----------------------------------------------------------------
+// Anchors from the previous hand-rolled theme, kept so the migration is not
+// also a redesign. Bootstrap derives its whole tonal ramp from these.
+//
+// Set on `$primary` rather than `$green`: Bootstrap defaults `$success` to
+// `$green`, so overriding that variable would recolour every success state too.
+$primary: #7ee787;
+// Bootstrap picks button/link text colour from this. The accent is light
+// enough that it needs dark text on top; raising the ratio floor forces that.
+$min-contrast-ratio: 4.5;
+
+// --- Dark mode ---------------------------------------------------------------
+// Bootstrap ships a `[data-bs-theme="dark"]` block built from these. Overriding
+// them here means the dark palette is compiled in rather than patched over.
+$body-bg-dark: #0d1117;
+$body-color-dark: #e6edf3;
+$body-secondary-color-dark: #9198a1;
+$body-secondary-bg-dark: #161b22;
+$body-tertiary-color-dark: #9198a1;
+$body-tertiary-bg-dark: #161b22;
+$body-emphasis-color-dark: #e6edf3;
+$border-color-dark: #262c36;
+$link-color-dark: $primary;
+$link-hover-color-dark: #a5f3ac;
+
+// --- Typography --------------------------------------------------------------
+$font-family-monospace: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+  "Liberation Mono", monospace;
+$font-family-base: $font-family-monospace;
+$font-family-code: $font-family-monospace;
+
+// --- Shape -------------------------------------------------------------------
+$border-radius: 6px;
+$border-radius-sm: 4px;
+$border-radius-lg: 8px;
+
+// --- Layout ------------------------------------------------------------------
+// Matches the hand-rolled theme's 46rem content column rather than Bootstrap's
+// default 1320px cap. Bootstrap's container is border-box and carries its own
+// 1.5rem gutter, so 736px here yields a ~688px content box — close to the
+// 700px the previous `--page-width: 46rem` produced.
+// Raise these to adopt Bootstrap's wider default instead.
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 736px,
+  xl: 736px,
+  xxl: 736px,
+);
+
+$enable-negative-margins: true;
+
+// --- Import ------------------------------------------------------------------
+// Bootstrap's own files are still written with `@import`, so this entry point
+// uses the same syntax to avoid double-loading the framework.
+@import "bootstrap/scss/bootstrap";

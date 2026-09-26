@@ -7,47 +7,68 @@ import { SITE } from '../consts';
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
+
+const focusAreas = [
+  {
+    title: 'Retrieval & RAG',
+    body: 'Hybrid search, chunking strategy, and reranking tuned against real queries.',
+  },
+  {
+    title: 'Evaluation',
+    body: 'Offline eval harnesses, LLM-as-judge with calibration, regression gates in CI.',
+  },
+  {
+    title: 'Inference infra',
+    body: 'Serving, batching, caching, and cost observability for production traffic.',
+  },
+];
 ---
 
 <BaseLayout>
-  <header class="page-header">
-    <h1>{SITE.name}</h1>
-    <p>{SITE.role}</p>
+  <header class="mb-5">
+    <h1 class="mb-2">{SITE.name}</h1>
+    <p class="text-primary mb-0">{SITE.role}</p>
   </header>
 
   <section aria-labelledby="focus-heading">
-    <h2 id="focus-heading">Focus areas</h2>
-    <ul class="card-grid">
-      <li class="card">
-        <h3>Retrieval &amp; RAG</h3>
-        <p>Hybrid search, chunking strategy, and reranking tuned against real queries.</p>
-      </li>
-      <li class="card">
-        <h3>Evaluation</h3>
-        <p>Offline eval harnesses, LLM-as-judge with calibration, regression gates in CI.</p>
-      </li>
-      <li class="card">
-        <h3>Inference infra</h3>
-        <p>Serving, batching, caching, and cost observability for production traffic.</p>
-      </li>
-    </ul>
+    <h2 id="focus-heading" class="mb-3">Focus areas</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      {
+        focusAreas.map((area) => (
+          <div class="col">
+            <div class="card h-100 bg-body-tertiary">
+              <div class="card-body">
+                <h3 class="card-title h6">{area.title}</h3>
+                <p class="card-text small text-body-secondary mb-0">{area.body}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
   </section>
 
   {
     posts.length > 0 && (
-      <section aria-labelledby="writing-heading">
-        <div class="section-heading">
-          <h2 id="writing-heading">Recent writing</h2>
-          <a href="/blog">All posts →</a>
+      <section aria-labelledby="writing-heading" class="mt-5">
+        <div class="d-flex flex-wrap align-items-baseline justify-content-between gap-2 mb-3">
+          <h2 id="writing-heading" class="mb-0">
+            Recent writing
+          </h2>
+          <a class="small" href="/blog">
+            All posts →
+          </a>
         </div>
-        <ul class="post-list">
+        <ul class="list-unstyled mb-0">
           {posts.map((post) => (
-            <li>
-              <h3 class="post-list__title">
-                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+            <li class="mb-4">
+              <h3 class="h6 mb-1">
+                <a class="link-body-emphasis text-decoration-none" href={`/blog/${post.id}/`}>
+                  {post.data.title}
+                </a>
               </h3>
-              <p class="muted">{post.data.description}</p>
-              <p class="post-meta">
+              <p class="text-body-secondary small mb-1">{post.data.description}</p>
+              <p class="small text-body-secondary mb-0">
                 <FormattedDate date={post.data.pubDate} />
               </p>
             </li>

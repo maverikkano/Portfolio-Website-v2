@@ -1,21 +1,37 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, SOCIAL_LINKS } from '../consts';
+
+const focusAreas = [
+  {
+    title: 'Retrieval & RAG',
+    body: 'Hybrid search, chunking strategy, and reranking tuned against real queries.',
+  },
+  {
+    title: 'Evaluation',
+    body: 'Offline eval harnesses, LLM-as-judge with calibration, regression gates in CI.',
+  },
+  {
+    title: 'Inference infra',
+    body: 'Serving, batching, caching, and cost observability for production traffic.',
+  },
+];
 ---
 
 <BaseLayout
   title="About"
   description={`About ${SITE.name} — ${SITE.role} working in retrieval, evaluation, and LLM infrastructure.`}
 >
-  <section class="hero">
-    <div>
-      <h1 class="hero__title">{SITE.name}</h1>
-      <p class="hero__role">{SITE.role}</p>
-      <p class="muted">
+  <!-- Two equal columns from `md` up, stacking below it. -->
+  <section class="row g-4 align-items-start mb-5">
+    <div class="col-md-6">
+      <h1 class="mb-2">{SITE.name}</h1>
+      <p class="text-primary mb-3">{SITE.role}</p>
+      <p class="text-body-secondary">
         I build LLM systems that hold up outside the demo: retrieval pipelines, evaluation
         harnesses, and the infrastructure that keeps inference cheap and observable.
       </p>
-      <ul class="link-row">
+      <ul class="list-unstyled d-flex flex-wrap gap-3 small mb-0 mt-3">
         {SITE.email && <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>}
         {
           SOCIAL_LINKS.map((link) => (
@@ -28,19 +44,30 @@ import { SITE, SOCIAL_LINKS } from '../consts';
         }
       </ul>
     </div>
-    {
-      SITE.avatar ? (
-        <img class="hero__photo" src={SITE.avatar} alt={SITE.name} width="144" height="144" />
-      ) : (
-        <div class="hero__photo hero__photo--placeholder" aria-hidden="true">
-          {SITE.name.charAt(0)}
-        </div>
-      )
-    }
+    <div class="col-md-6">
+      {
+        SITE.avatar ? (
+          <img
+            class="img-fluid rounded w-100"
+            src={SITE.avatar}
+            alt={SITE.name}
+            width="144"
+            height="144"
+          />
+        ) : (
+          <div
+            class="ratio ratio-1x1 rounded border bg-body-tertiary text-body-secondary fs-2 d-flex align-items-center justify-content-center"
+            aria-hidden="true"
+          >
+            <span>{SITE.name.charAt(0)}</span>
+          </div>
+        )
+      }
+    </div>
   </section>
 
   <section aria-labelledby="about-heading">
-    <h2 id="about-heading">About</h2>
+    <h2 id="about-heading" class="mb-3">Background</h2>
     <p>
       I work across the stack of applied AI — data curation and embedding strategy at the
       bottom, evaluation and observability at the top. Most of my time goes into the
@@ -54,21 +81,21 @@ import { SITE, SOCIAL_LINKS } from '../consts';
     </p>
   </section>
 
-  <section aria-labelledby="focus-heading">
-    <h2 id="focus-heading">Focus areas</h2>
-    <ul class="card-grid">
-      <li class="card">
-        <h3>Retrieval &amp; RAG</h3>
-        <p>Hybrid search, chunking strategy, and reranking tuned against real queries.</p>
-      </li>
-      <li class="card">
-        <h3>Evaluation</h3>
-        <p>Offline eval harnesses, LLM-as-judge with calibration, regression gates in CI.</p>
-      </li>
-      <li class="card">
-        <h3>Inference infra</h3>
-        <p>Serving, batching, caching, and cost observability for production traffic.</p>
-      </li>
-    </ul>
+  <section aria-labelledby="focus-heading" class="mt-5">
+    <h2 id="focus-heading" class="mb-3">Focus areas</h2>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+      {
+        focusAreas.map((area) => (
+          <div class="col">
+            <div class="card h-100 bg-body-tertiary">
+              <div class="card-body">
+                <h3 class="card-title h6">{area.title}</h3>
+                <p class="card-text small text-body-secondary mb-0">{area.body}</p>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
   </section>
 </BaseLayout>

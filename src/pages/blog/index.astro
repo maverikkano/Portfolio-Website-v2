@@ -12,28 +12,32 @@ const description = `Essays on retrieval, evaluation, and production LLM systems
 ---
 
 <BaseLayout title="Blog" description={description}>
-  <header class="page-header">
-    <h1>Blog</h1>
-    <p>{description}</p>
+  <header class="mb-5">
+    <h1 class="mb-2">Blog</h1>
+    <p class="text-body-secondary mb-0">{description}</p>
   </header>
 
   {
     posts.length === 0 ? (
-      <p class="muted">No posts yet.</p>
+      <p class="text-body-secondary">No posts yet.</p>
     ) : (
-      <ul class="post-list">
+      <ul class="list-unstyled mb-0">
         {posts.map((post) => (
-          <li>
-            <h2 class="post-list__title">
-              <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          <li class="mb-5">
+            <h2 class="h5 mb-2">
+              <a class="link-body-emphasis text-decoration-none" href={`/blog/${post.id}/`}>
+                {post.data.title}
+              </a>
             </h2>
-            <p class="muted">{post.data.description}</p>
-            <p class="post-meta">
+            <p class="text-body-secondary">{post.data.description}</p>
+            <p class="d-flex flex-wrap align-items-center gap-3 small text-body-secondary mb-0">
               <FormattedDate date={post.data.pubDate} />
               {post.data.tags.length > 0 && (
-                <span class="tag-list">
+                <span class="d-flex flex-wrap gap-2">
                   {post.data.tags.map((tag) => (
-                    <span class="tag">{tag}</span>
+                    <span class="badge rounded-pill text-body-secondary border fw-normal">
+                      {tag}
+                    </span>
                   ))}
                 </span>
               )}

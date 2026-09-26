@@ -23,10 +23,10 @@ const { Content } = await render(post);
   publishedTime={post.data.pubDate}
 >
   <article class="prose">
-    <a class="back-link" href="/blog">← All posts</a>
-    <header class="article-header">
-      <h1>{post.data.title}</h1>
-      <p class="post-meta">
+    <a class="small d-inline-block mb-4" href="/blog">← All posts</a>
+    <header class="mb-4 pb-3 border-bottom">
+      <h1 class="mb-2">{post.data.title}</h1>
+      <p class="d-flex flex-wrap align-items-center gap-3 small text-body-secondary mb-0">
         <FormattedDate date={post.data.pubDate} />
         {
           post.data.updatedDate && (
@@ -35,7 +35,7 @@ const { Content } = await render(post);
             </span>
           )
         }
-        {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+        {post.data.tags.map((tag) => <span class="badge rounded-pill text-body-secondary border fw-normal">{tag}</span>)}
       </p>
     </header>
     <Content />
