@@ -6,27 +6,46 @@ const path = Astro.url.pathname;
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 
-<header class="site-header">
-  <div class="container site-header__inner">
-    <a class="site-title" href="/">
-      <span class="site-title__logo" aria-hidden="true">{SITE.logo}</span>
+<!-- Sticky navbar collapsing to a toggler below `lg`. The previous header was a
+     flex row at every width; the collapse needs the bundled Bootstrap JS. -->
+<header class="navbar navbar-expand-lg sticky-top border-bottom bg-body-tertiary">
+  <div class="container">
+    <a class="navbar-brand mb-0 fw-semibold" href="/">
+      <span class="text-primary" aria-hidden="true">{SITE.logo}</span>
       {SITE.name}
     </a>
-    <nav class="site-nav" aria-label="Main">
-      {
-        NAV_LINKS.map((link) => (
-          <a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
-            {link.label}
-          </a>
-        ))
-      }
-      {
-        SOCIAL_LINKS.map((link) => (
-          <a href={link.href} rel="me noopener" target="_blank">
-            {link.label}
-          </a>
-        ))
-      }
-    </nav>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#site-nav"
+      aria-controls="site-nav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="site-nav">
+      <nav class="navbar-nav ms-auto small" aria-label="Main">
+        {
+          NAV_LINKS.map((link) => (
+            <a
+              class="nav-link"
+              href={link.href}
+              aria-current={isCurrent(link.href) ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          ))
+        }
+        {
+          SOCIAL_LINKS.map((link) => (
+            <a class="nav-link" href={link.href} rel="me noopener" target="_blank">
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+    </div>
   </div>
 </header>

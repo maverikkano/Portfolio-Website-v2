@@ -1,0 +1,77 @@
+// ---------------------------------------------------------------------------
+// Content typography.
+//
+// Bootstrap styles components, not long-form prose: it has no notion of a
+// reading measure, and its Reboot sets `margin: 0` on headings and paragraphs,
+// so article bodies need their own rhythm. Everything here is scoped to
+// `.prose` or to the few spot styles Bootstrap has no component for.
+// ---------------------------------------------------------------------------
+
+.prose {
+  // 0.6em mono advance means this lands near 650px at the default 16px root.
+  > p,
+  > ul,
+  > ol,
+  > blockquote,
+  > table,
+  > pre {
+    max-width: 68ch;
+  }
+
+  // Bootstrap's Reboot zeroes heading margins; restore the vertical rhythm
+  // the article body expects.
+  > h2 {
+    margin-top: 2.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  > h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5625rem;
+  }
+
+  > p,
+  > ul,
+  > ol {
+    margin-bottom: 0.75rem;
+  }
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  > ul,
+  > ol {
+    padding-left: 1.125rem;
+  }
+
+  > li + li {
+    margin-top: 0.1875rem;
+  }
+
+  > li::marker {
+    color: var(--bs-secondary-color);
+  }
+
+  > hr {
+    margin-block: 2.25rem;
+  }
+
+  > blockquote {
+    border-left: 3px solid var(--bs-primary);
+    padding-left: 0.75rem;
+    color: var(--bs-secondary-color);
+  }
+
+  > pre {
+    background: var(--bs-secondary-bg);
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    padding: 0.75rem;
+    margin-bottom: 1.125rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    tab-size: 2;
+  }
+}

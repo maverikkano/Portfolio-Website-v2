@@ -34,25 +34,31 @@ const projects = [
   title="Projects"
   description="Selected projects in retrieval, evaluation, and LLM infrastructure."
 >
-  <header class="page-header">
-    <h1>Projects</h1>
-    <p>Selected work in retrieval, evaluation, and LLM infrastructure.</p>
+  <header class="mb-5">
+    <h1 class="mb-2">Projects</h1>
+    <p class="text-body-secondary mb-0">
+      Selected work in retrieval, evaluation, and LLM infrastructure.
+    </p>
   </header>
 
-  <ul class="post-list">
+  <ul class="list-unstyled mb-0">
     {
       projects.map((project) => (
-        <li>
-          <h2 class="post-list__title">
-            {project.href ? <a href={project.href}>{project.name}</a> : project.name}
+        <li class="mb-5">
+          <h2 class="h5 mb-2">
+            {project.href ? (
+              <a class="link-body-emphasis text-decoration-none" href={project.href}>
+                {project.name}
+              </a>
+            ) : (
+              project.name
+            )}
           </h2>
-          <p class="muted">{project.description}</p>
-          <p class="post-meta">
-            <span class="tag-list">
-              {project.stack.map((item) => (
-                <span class="tag">{item}</span>
-              ))}
-            </span>
+          <p class="text-body-secondary">{project.description}</p>
+          <p class="d-flex flex-wrap gap-2 mb-0">
+            {project.stack.map((item) => (
+              <span class="badge rounded-pill text-body-secondary border fw-normal">{item}</span>
+            ))}
           </p>
         </li>
       ))
